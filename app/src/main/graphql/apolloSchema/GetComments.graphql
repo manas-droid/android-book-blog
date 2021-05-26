@@ -1,0 +1,8 @@
+query GetAllCommentResult($postId : Int!){
+    getComments(postId: $postId){
+        picture
+        nickname
+        comment
+        commentId
+    }
+}

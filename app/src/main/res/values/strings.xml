@@ -1,0 +1,9 @@
+<resources>
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
+    <string name="app_name">BookBlog</string>
+    <string name="com_auth0_domain">dev-qjkask69.us.auth0.com</string>
+    <string name="com_auth0_client_id">fiOzCgGKF24h9YpZwAPZFoegaRJWaKqa</string>
+    <string name="liked">liked</string>
+    <string name="not_liked">not liked</string>
+</resources>

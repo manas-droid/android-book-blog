@@ -1,0 +1,9 @@
+mutation AddBookMarkPostResult($postId : Int!){
+    addBookMark (postId : $postId){
+        ok
+        errors{
+            path
+            message
+        }
+    }
+}

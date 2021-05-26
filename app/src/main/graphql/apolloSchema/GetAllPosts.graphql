@@ -1,0 +1,10 @@
+query GetAllPostResults{
+    getAllPosts{
+        imageUrl
+        bookname
+        id
+        description
+        nickname
+        likeCount
+    }
+}

@@ -1,0 +1,3 @@
+query GetPostBookMarkResult($postId : Int!){
+    getBookMarks(postId : $postId)
+}

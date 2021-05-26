@@ -1,0 +1,3 @@
+query GetPostLikeResult($postId : Int!){
+    getLikes(postId:$postId)
+}

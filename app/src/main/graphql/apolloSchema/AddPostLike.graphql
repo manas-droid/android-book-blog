@@ -1,0 +1,9 @@
+mutation AddPostLike($postId : Int!){
+    addLikes(postId : $postId){
+        ok
+        errors{
+            path
+            message
+        }
+    }
+}
