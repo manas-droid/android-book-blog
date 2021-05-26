@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".CommentActivity"
     >
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/commentRecyclerview"
         android:layout_alignParentTop="true"
@@ -22,7 +20,6 @@
         android:padding="10dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-
         >
         <ImageView
             android:layout_width="42dp"

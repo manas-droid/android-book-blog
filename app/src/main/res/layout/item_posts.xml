@@ -51,11 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Description"
-                android:ellipsize="end"
-                android:maxLines="5"
                 android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="?android:attr/textColorSecondary"
-                />
+                android:textColor="?android:attr/textColorSecondary" />
 
         </LinearLayout>
         <LinearLayout
@@ -74,7 +71,7 @@
                />
 
            <ImageView
-               android:layout_marginLeft="250dp"
+               android:layout_marginLeft="200dp"
                android:layout_width="40dp"
                android:layout_height="40dp"
                android:src="@drawable/ic_notbookmarked"

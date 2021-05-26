@@ -12,11 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BookBlog"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CommentActivity"></activity>
-        <activity
-            android:name=".HomeActivity"
-            />
-
+        <activity android:name=".AddPostActivity"></activity>
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".HomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

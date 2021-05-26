@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity {
             = item -> {
         Fragment selectedFragment = null;
 
-
         switch (item.getItemId()){
             case R.id.home : selectedFragment = new HomeFragment();
                             break;

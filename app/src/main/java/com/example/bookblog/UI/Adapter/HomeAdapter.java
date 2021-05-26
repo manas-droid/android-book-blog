@@ -24,6 +24,7 @@ import com.example.bookblog.CommentActivity;
 import com.example.bookblog.Graphql.ApolloInstance;
 import com.example.bookblog.Graphql.Callbacks.GetLikeResponse;
 import com.example.bookblog.Graphql.Likes.GetLikes;
+import com.example.bookblog.Graphql.Likes.PostLikes;
 import com.example.bookblog.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import apolloSchema.GetAllPostResultsQuery;
+import apolloSchema.GetPostBookMarkResultQuery;
 import apolloSchema.GetPostLikeResultQuery;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> implements GetLikeResponse {
@@ -38,13 +40,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private static final String TAG = "HomeAdapter";
     private final Context activity;
     private final ApolloClient client;
+    private PostLikes postLikes;
     public HomeAdapter(List<GetAllPostResultsQuery.GetAllPost> list , Context activity){
         this.list = list;
         this.activity = activity;
         new ApolloInstance((AppCompatActivity) this.activity);
         client = ApolloInstance.getInstance();
+        postLikes = new PostLikes((AppCompatActivity) this.activity);
     }
-
     @NonNull
     @Override
     public HomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -64,7 +67,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             @Override
             public void onResponse(@NotNull Response<GetPostLikeResultQuery.Data> response) {
                 if(!response.hasErrors()){
-                    if (response.getData().getLikes()) holder.likes.setImageResource(R.drawable.ic_like);
+                    if (response.getData().getLikes()) {
+                        holder.likes.setTag("liked");
+                        holder.likes.setImageResource(R.drawable.ic_like);
+                    }
                 }
                 else {
                     for(Error error : response.getErrors()){
@@ -78,10 +84,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         });
 
-
+        client.query(GetPostBookMarkResultQuery.builder().postId(post.id()).build())
+                .enqueue(new ApolloCall.Callback<GetPostBookMarkResultQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull Response<GetPostBookMarkResultQuery.Data> response) {
+                if(!response.hasErrors()){
+                    if(response.getData().getBookMarks()) holder.bookMark.setImageResource(R.drawable.ic_bookmarked);
+                }
+            }
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+                Log.e(TAG, "onFailure: ",e );
+            }
+        });
 
         holder.likes.setOnClickListener(v -> {
-
           if(holder.likes.getTag().equals("not liked")){
               Log.d(TAG, "onBindViewHolder: to like");
               holder.likes.setImageResource(R.drawable.ic_like);
@@ -91,10 +108,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
               holder.likes.setImageResource(R.drawable.ic_notliked);
               holder.likes.setTag("not liked");
           }
-
+            postLikes.addLikeToPost(post.id());
         });
 
 
+        holder.bookMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.bookMark.getTag().equals("not bookmarked")){
+                    Log.d(TAG, "onBindViewHolder: to bookmark");
+                    holder.likes.setImageResource(R.drawable.ic_bookmarked);
+                    holder.likes.setTag("bookmarked");
+                }else{
+                    Log.d(TAG, "onBindViewHolder: to un bookmark");
+                    holder.likes.setImageResource(R.drawable.ic_notbookmarked);
+                    holder.likes.setTag("not bookmarked");
+                }
+            }
+        });
 
 
         holder.author.setText("article written by : "+post.nickname());
