@@ -7,7 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -22,6 +27,8 @@ public class CommentActivity extends AppCompatActivity {
     private ImageView imageView;
     private RecyclerView recyclerView;
     private CommentActivityViewModel commentActivityViewModel;
+    private Button submitPost;
+    private EditText addCommentToPost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +38,12 @@ public class CommentActivity extends AppCompatActivity {
         int postId= intent.getIntExtra("postId", 0);
         recyclerView = findViewById(R.id.commentRecyclerview);
         User user = UserProfile.getUserInfo(this);
+
         Glide.with(this).load(user.getPictureURL()).into(imageView);
         commentActivityViewModel = new ViewModelProvider(this.getViewModelStore(), ViewModelProvider
                 .AndroidViewModelFactory.getInstance(getApplication()))
                 .get(CommentActivityViewModel.class);
+
 
         commentActivityViewModel.callGetComments(postId);
 
@@ -46,7 +55,37 @@ public class CommentActivity extends AppCompatActivity {
                 recyclerView.setAdapter(commentAdapter);
             }
         });
+
+        addCommentToPost = findViewById(R.id.addPostComment);
+        submitPost = findViewById(R.id.postComment);
+        addCommentToPost.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().trim().length()>0 && !submitPost.isEnabled()){
+                    submitPost.setEnabled(true);
+                }else if(s.toString().trim().length() == 0 && submitPost.isEnabled()){
+                    submitPost.setEnabled(false);
+                }
+            }
+        });
+
+        submitPost.setOnClickListener(v -> {
+            Log.d(TAG, "onClick: "+addCommentToPost.getText().toString());
+            commentActivityViewModel.callPostComments(postId,addCommentToPost.getText().toString(),this);
+            addCommentToPost.setText("");
+            Log.d(TAG, "onCreate: submitted");
+        });
     }
+
 
     @Override
     protected void onStop() {
@@ -65,4 +104,6 @@ public class CommentActivity extends AppCompatActivity {
         Log.d(TAG, "onDestroy:");
         super.onDestroy();
     }
+
+
 }

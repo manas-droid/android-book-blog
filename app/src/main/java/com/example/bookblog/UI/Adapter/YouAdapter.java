@@ -1,5 +1,6 @@
 package com.example.bookblog.UI.Adapter;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.bumptech.glide.Glide;
 import com.example.bookblog.CommentActivity;
 import com.example.bookblog.Graphql.ApolloInstance;
+import com.example.bookblog.Graphql.Callbacks.GetAllYourPost;
 import com.example.bookblog.Graphql.Callbacks.GetLikeResponse;
 import com.example.bookblog.Graphql.GraphqlPostQueries;
 import com.example.bookblog.R;
@@ -30,18 +32,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import apolloSchema.AllYourPostQuery;
 import apolloSchema.GetAllPostResultsQuery;
 import apolloSchema.GetPostBookMarkResultQuery;
 import apolloSchema.GetPostLikeResultQuery;
 
-
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> implements GetLikeResponse {
-    List<GetAllPostResultsQuery.GetAllPost> list;
+public class YouAdapter extends RecyclerView.Adapter<YouAdapter.HomeViewHolder> implements GetLikeResponse {
+    List<AllYourPostQuery.GetYourPost> list;
     private static final String TAG = "HomeAdapter";
     private final Context activity;
     private final ApolloClient client;
     private GraphqlPostQueries graphqlQueries;
-    public HomeAdapter(List<GetAllPostResultsQuery.GetAllPost> list , Context activity){
+    public YouAdapter(List<AllYourPostQuery.GetYourPost> list , Context activity){
         this.list = list;
         this.activity = activity;
         client = ApolloInstance.getInstance();
@@ -58,7 +60,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
 
-        GetAllPostResultsQuery.GetAllPost post = list.get(position);
+        AllYourPostQuery.GetYourPost post = list.get(position);
         ApolloQueryCall<GetPostLikeResultQuery.Data> like =  this.client.query(GetPostLikeResultQuery.builder().postId(post.id()).build());
 
         like.enqueue(new ApolloCall.Callback<GetPostLikeResultQuery.Data>() {
@@ -85,34 +87,34 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         client.query(GetPostBookMarkResultQuery.builder().postId(post.id()).build())
                 .enqueue(new ApolloCall.Callback<GetPostBookMarkResultQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetPostBookMarkResultQuery.Data> response) {
-                if(!response.hasErrors()){
-                    if(response.getData().getBookMarks()) {
-                        holder.bookMark.setImageResource(R.drawable.ic_bookmarked);
-                        holder.bookMark.setTag("bookmarked");
+                    @Override
+                    public void onResponse(@NotNull Response<GetPostBookMarkResultQuery.Data> response) {
+                        if(!response.hasErrors()){
+                            if(response.getData().getBookMarks()) {
+                                holder.bookMark.setImageResource(R.drawable.ic_bookmarked);
+                                holder.bookMark.setTag("bookmarked");
+                            }
+                        }
                     }
-                }
-            }
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "onFailure: ",e );
-            }
-        });
+                    @Override
+                    public void onFailure(@NotNull ApolloException e) {
+                        Log.e(TAG, "onFailure: ",e );
+                    }
+                });
 
 
         holder.likes.setOnClickListener(v -> {
-          if(holder.likes.getTag().equals("not liked")){
-              Log.d(TAG, "onBindViewHolder: to like");
-              holder.likes.setImageResource(R.drawable.ic_like);
-              holder.likes.setTag("liked");
-          }else{
-              Log.d(TAG, "onBindViewHolder: to unlike");
-              holder.likes.setImageResource(R.drawable.ic_notliked);
-              holder.likes.setTag("not liked");
-          }
+            if(holder.likes.getTag().equals("not liked")){
+                Log.d(TAG, "onBindViewHolder: to like");
+                holder.likes.setImageResource(R.drawable.ic_like);
+                holder.likes.setTag("liked");
+            }else{
+                Log.d(TAG, "onBindViewHolder: to unlike");
+                holder.likes.setImageResource(R.drawable.ic_notliked);
+                holder.likes.setTag("not liked");
+            }
 
-          graphqlQueries.postLikesForAPost(post.id());
+            graphqlQueries.postLikesForAPost(post.id());
         });
 
 
@@ -131,9 +133,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         });
 
 
-        holder.author.setText("article written by : "+post.nickname());
         holder.description.setText(post.description());
-        holder.bookname.setText(post.bookname());
+        holder.bookName.setText(post.bookname());
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, CommentActivity.class);
@@ -160,19 +161,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     }
 
     public class HomeViewHolder extends RecyclerView.ViewHolder{
-       public TextView bookname , description , author;
-       public ImageView bookImage , likes , bookMark;
-
+        public TextView bookName , description;
+        public ImageView bookImage , likes , bookMark;
 
         public HomeViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.bookname = itemView.findViewById(R.id.bookname);
+            this.bookName = itemView.findViewById(R.id.bookname);
             this.description = itemView.findViewById(R.id.description);
-            this.author = itemView.findViewById(R.id.nickname);
             this.bookImage = itemView.findViewById(R.id.imageUrl);
             this.likes = itemView.findViewById(R.id.like);
             this.bookMark = itemView.findViewById(R.id.bookMark);
         }
     }
-
 }

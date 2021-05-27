@@ -1,0 +1,9 @@
+mutation AddPostCommentResult($postId : Int! $parentId:Int $comment : String!){
+    addPostComment(postId  : $postId parentId:$parentId comment : $comment){
+        ok
+        errors{
+            path
+            message
+        }
+    }
+}

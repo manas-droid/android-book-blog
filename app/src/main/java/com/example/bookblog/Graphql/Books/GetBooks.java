@@ -27,7 +27,6 @@ public class GetBooks {
         client = ApolloInstance.getInstance();
     }
 
-
     public void getAllPosts(GetBookResponse getBookResponse){
       ApolloQueryCall<GetAllPostResultsQuery.Data> allPosts = client.query(GetAllPostResultsQuery.builder().build());
       allPosts.enqueue(new ApolloCall.Callback<GetAllPostResultsQuery.Data>() {
@@ -41,11 +40,8 @@ public class GetBooks {
             public void onFailure(@NotNull ApolloException e) {
                 Log.e(TAG, "onFailure: ",e);
             }
-        });
+      });
+
     }
 
 }
-
-
-
-// login/register -> home (posts , add like , add bookmark , get like , add bookmark);

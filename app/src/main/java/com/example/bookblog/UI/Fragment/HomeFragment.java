@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
         homeFragmentViewModel.getGetAllPostMutableLiveData().observe(getActivity(), new Observer<List<GetAllPostResultsQuery.GetAllPost>>() {
             @Override
             public void onChanged(List<GetAllPostResultsQuery.GetAllPost> getAllPosts) {
-                if(getAllPosts!=null) {
+                if(getAllPosts!=null && getActivity()!=null) {
                     HomeAdapter adapter = new HomeAdapter(getAllPosts, getActivity());
                     recyclerView.setAdapter(adapter);
                 }

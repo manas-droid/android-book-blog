@@ -22,6 +22,7 @@ public class GetComments {
         client = ApolloInstance.getInstance();
         this.postId  = postId;
     }
+
     public void getCommentForAPost(GetCommentsResponse getCommentsResponse){
          ApolloQueryCall<GetAllCommentResultQuery.Data> comments = client.query(GetAllCommentResultQuery.builder().postId(postId).build());
          comments.enqueue(new ApolloCall.Callback<GetAllCommentResultQuery.Data>() {

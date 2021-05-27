@@ -13,6 +13,7 @@ import com.example.bookblog.Graphql.Books.GetBooks;
 import com.example.bookblog.Graphql.Callbacks.GetBookResponse;
 import com.example.bookblog.UI.Adapter.HomeAdapter;
 import com.example.bookblog.UI.Fragment.HomeFragment;
+import com.example.bookblog.UI.Fragment.YouFragment;
 import com.example.bookblog.UtilUser.User;
 import com.example.bookblog.UtilUser.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         User user = UserProfile.getUserInfo(this);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
          Menu menu = bottomNavigationView.getMenu();
          MenuItem menuItem = menu.findItem(R.id.you);
          menuItem.setTitle(user.getName());
@@ -45,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.home : selectedFragment = new HomeFragment();
                             break;
-
+            case R.id.you : selectedFragment = new YouFragment();
             default: break;
         }
         getSupportFragmentManager().beginTransaction()

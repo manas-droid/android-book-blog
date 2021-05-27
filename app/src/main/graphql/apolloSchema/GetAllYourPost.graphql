@@ -1,0 +1,8 @@
+query AllYourPost{
+    getYourPosts{
+        id
+        imageUrl
+        bookname
+        description
+    }
+}

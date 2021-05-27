@@ -20,6 +20,7 @@ public class HomeFragmentViewModel extends AndroidViewModel implements GetBookRe
         super(application);
         GetBooks getBooks = new GetBooks();
         getBooks.getAllPosts(this);
+
         getAllPostMutableLiveData = new MutableLiveData<>();
         getAllPostMutableLiveData.setValue(null);
     }
