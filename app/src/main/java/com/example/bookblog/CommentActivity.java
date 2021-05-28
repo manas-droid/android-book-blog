@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.example.bookblog.UI.Adapter.CommentAdapter;
@@ -27,8 +28,9 @@ public class CommentActivity extends AppCompatActivity {
     private ImageView imageView;
     private RecyclerView recyclerView;
     private CommentActivityViewModel commentActivityViewModel;
-    private Button submitPost;
+    private Button submitPost ;
     private EditText addCommentToPost;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,7 @@ public class CommentActivity extends AppCompatActivity {
         imageView = findViewById(R.id.user_image);
         int postId= intent.getIntExtra("postId", 0);
         recyclerView = findViewById(R.id.commentRecyclerview);
+        progressBar = findViewById(R.id.progressBar);
         User user = UserProfile.getUserInfo(this);
 
         Glide.with(this).load(user.getPictureURL()).into(imageView);
@@ -51,8 +54,11 @@ public class CommentActivity extends AppCompatActivity {
 
         commentActivityViewModel.getGetCommentLiveData().observe(this, getCommentList -> {
             if(getCommentList!=null) {
+                progressBar.setVisibility(View.GONE);
                 CommentAdapter commentAdapter = new CommentAdapter(getCommentList);
                 recyclerView.setAdapter(commentAdapter);
+            }else{
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
 

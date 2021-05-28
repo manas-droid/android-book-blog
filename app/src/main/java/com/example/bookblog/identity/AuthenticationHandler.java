@@ -35,6 +35,7 @@ public class AuthenticationHandler {
     private final Auth0 auth0;
     private final AuthenticationAPIClient authenticationAPIClient;
     private static final String TAG = "AuthenticationHandler";
+
     public AuthenticationHandler(AppCompatActivity activity){
          this.activity = activity;
         this.auth0 = new Auth0(this.activity);

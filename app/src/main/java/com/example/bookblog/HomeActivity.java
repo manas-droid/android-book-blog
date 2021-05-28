@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.bookblog.Graphql.ApolloInstance;
 import com.example.bookblog.Graphql.Books.GetBooks;
 import com.example.bookblog.Graphql.Callbacks.GetBookResponse;
 import com.example.bookblog.UI.Adapter.HomeAdapter;
@@ -16,6 +17,7 @@ import com.example.bookblog.UI.Fragment.HomeFragment;
 import com.example.bookblog.UI.Fragment.YouFragment;
 import com.example.bookblog.UtilUser.User;
 import com.example.bookblog.UtilUser.UserProfile;
+import com.example.bookblog.identity.AuthenticationHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -38,9 +40,11 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new HomeFragment())
                 .commit();
+
+        ApolloInstance.setToken(this);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener
+    private final BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener
             = item -> {
         Fragment selectedFragment = null;
 

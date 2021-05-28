@@ -4,55 +4,76 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.example.bookblog.R;
-import com.example.bookblog.UI.Adapter.HomeAdapter;
-import com.example.bookblog.UI.Adapter.YouAdapter;
-import com.example.bookblog.UI.ViewModel.HomeFragmentViewModel;
-import com.example.bookblog.UI.ViewModel.YouFragmentViewModel;
-
-import java.util.List;
-
-import apolloSchema.AllYourPostQuery;
+import com.example.bookblog.UI.Adapter.YouFragmentAdapter;
+import com.example.bookblog.UtilUser.User;
+import com.example.bookblog.UtilUser.UserProfile;
+import com.google.android.material.tabs.TabLayout;
 
 public class YouFragment extends Fragment {
+    View myFragment;
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    TextView userName;
+    ImageView userImage;
+    User user;
 
-    YouFragmentViewModel fragmentViewModel;
-    private RecyclerView recyclerView;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fragmentViewModel = new ViewModelProvider(getActivity(), ViewModelProvider
-                .AndroidViewModelFactory.getInstance(getActivity().getApplication()))
-                .get(YouFragmentViewModel.class);
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_you, container , false);
-        recyclerView = view.findViewById(R.id.recyclerView);
+        myFragment = inflater.inflate(R.layout.fragment_you, container,false);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        fragmentViewModel.getMutableLiveData().observe(this.getViewLifecycleOwner(), new Observer<List<AllYourPostQuery.GetYourPost>>() {
-            @Override
-            public void onChanged(List<AllYourPostQuery.GetYourPost> getYourPosts) {
-                if(getYourPosts!=null){
-                    YouAdapter youAdapter = new YouAdapter(getYourPosts, getActivity());
-                    recyclerView.setAdapter(youAdapter);
-                }
-            }
-        });
-
-        return view;
+        viewPager = myFragment.findViewById(R.id.viewPager);
+        tabLayout = myFragment.findViewById(R.id.tabLayout);
+         userImage = myFragment.findViewById(R.id.user_image);
+         userName = myFragment.findViewById(R.id.user_name);
+         user = UserProfile.getUserInfo(getActivity());
+        return myFragment;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+
+        userName.setText(user.getName());
+        Glide.with(this).load(user.getPictureURL()).into(userImage);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+    private void setupWithViewPager(ViewPager viewPager){
+
+        YouFragmentAdapter adapter = new YouFragmentAdapter(getChildFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapter.addFragment(new YourPostFragment(), "Your Posts");
+        adapter.addFragment(new YourBookMarksFragment(), "BookMarks");
+        viewPager.setAdapter(adapter);
+    }
 }

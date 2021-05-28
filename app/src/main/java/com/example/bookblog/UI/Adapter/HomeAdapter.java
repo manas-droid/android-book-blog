@@ -6,12 +6,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
@@ -22,7 +25,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.bumptech.glide.Glide;
 import com.example.bookblog.CommentActivity;
 import com.example.bookblog.Graphql.ApolloInstance;
-import com.example.bookblog.Graphql.Callbacks.GetLikeResponse;
 import com.example.bookblog.Graphql.GraphqlPostQueries;
 import com.example.bookblog.R;
 
@@ -35,7 +37,7 @@ import apolloSchema.GetPostBookMarkResultQuery;
 import apolloSchema.GetPostLikeResultQuery;
 
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> implements GetLikeResponse {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder>  {
     List<GetAllPostResultsQuery.GetAllPost> list;
     private static final String TAG = "HomeAdapter";
     private final Context activity;
@@ -45,7 +47,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         this.list = list;
         this.activity = activity;
         client = ApolloInstance.getInstance();
-        graphqlQueries = new GraphqlPostQueries((AppCompatActivity)activity);
+        graphqlQueries = new GraphqlPostQueries();
     }
     @NonNull
     @Override
@@ -142,6 +144,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         });
 
 
+
+        holder.expand.setOnClickListener(v ->{
+
+            TransitionManager.beginDelayedTransition(holder.linearLayout, new AutoTransition());
+
+            if(holder.description.getMaxLines() == 5){
+                holder.description.setMaxLines(Integer.MAX_VALUE);
+                holder.expand.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_up_24);
+            }else{
+                holder.description.setMaxLines(5);
+                holder.expand.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_down_24);
+            }
+        });
+
+
         Glide.with(holder.itemView).load(post.imageUrl())
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.bookImage);
@@ -154,14 +171,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         return list.size();
     }
 
-    @Override
-    public void setLikeResponse(boolean isLiked) {
-        Log.d(TAG, "setLikeResponse: "+isLiked);
-    }
-
     public class HomeViewHolder extends RecyclerView.ViewHolder{
        public TextView bookname , description , author;
        public ImageView bookImage , likes , bookMark;
+       public Button expand;
+       public LinearLayout linearLayout;
 
 
         public HomeViewHolder(@NonNull View itemView) {
@@ -172,6 +186,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             this.bookImage = itemView.findViewById(R.id.imageUrl);
             this.likes = itemView.findViewById(R.id.like);
             this.bookMark = itemView.findViewById(R.id.bookMark);
+            this.expand = itemView.findViewById(R.id.expandableClick);
+            this.linearLayout = itemView.findViewById(R.id.content);
         }
     }
 

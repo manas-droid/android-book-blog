@@ -31,7 +31,7 @@ public class CommentActivityViewModel extends ViewModel implements GetCommentsRe
     }
 
     public void callPostComments(Integer postId , String comment , Context activity){
-            GraphqlPostQueries graphqlPostQueries = new GraphqlPostQueries((AppCompatActivity)activity);
+            GraphqlPostQueries graphqlPostQueries = new GraphqlPostQueries();
             graphqlPostQueries.postCommentForAPost(postId, comment);
     }
 

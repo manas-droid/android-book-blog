@@ -21,14 +21,17 @@ public class ApolloInstance {
     public static final  String BASE_URL ="http://13.59.62.47/graphql";
     private static ApolloClient apolloClient = null;
     private AppCompatActivity activity = null;
-    private AuthenticationHandler authenticationHandler;
-    private  static String token = "";
+
+    private  static String token = null;
     private static final String TAG = "ApolloInstance";
-    public ApolloInstance(AppCompatActivity activity){
-        this.activity = activity;
-        authenticationHandler = new AuthenticationHandler(activity);
-        token = (authenticationHandler.hasValidCredentials()) ? authenticationHandler.getAccessToken() : "";
+
+    public static void setToken(AppCompatActivity activity){
+        if(token == null) {
+            AuthenticationHandler authenticationHandler = new AuthenticationHandler(activity);
+            token = (authenticationHandler.hasValidCredentials()) ? authenticationHandler.getAccessToken() : "";
+        }
     }
+
     public static ApolloClient getInstance(){
     if(apolloClient == null) {
         apolloClient = ApolloClient
@@ -48,7 +51,5 @@ public class ApolloInstance {
     }
     return apolloClient;
     }
-
-
 
 }

@@ -6,4 +6,5 @@
     <string name="com_auth0_client_id">fiOzCgGKF24h9YpZwAPZFoegaRJWaKqa</string>
     <string name="liked">liked</string>
     <string name="not_liked">not liked</string>
+    <string name="nav_bookmark">Saved Posts</string>
 </resources>

@@ -13,9 +13,9 @@ import java.util.List;
 
 import apolloSchema.AllYourPostQuery;
 
-public class YouFragmentViewModel extends AndroidViewModel implements GetAllYourPost {
+public class YourPostsFragmentViewModel extends AndroidViewModel implements GetAllYourPost {
     private MutableLiveData<List<AllYourPostQuery.GetYourPost>> mutableLiveData;
-    public YouFragmentViewModel(@NonNull Application application) {
+    public YourPostsFragmentViewModel(@NonNull Application application) {
         super(application);
         mutableLiveData = new MutableLiveData<>();
         mutableLiveData.setValue(null);

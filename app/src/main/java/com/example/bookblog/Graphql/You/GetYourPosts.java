@@ -20,6 +20,8 @@ public class GetYourPosts {
         client = ApolloInstance.getInstance();
     }
 
+
+
     public void getAllPosts(GetAllYourPost getAllYourPost){
         client.query(AllYourPostQuery.builder().build()).enqueue(new ApolloCall.Callback<AllYourPostQuery.Data>() {
             @Override

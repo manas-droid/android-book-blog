@@ -7,12 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
@@ -23,7 +27,6 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.bumptech.glide.Glide;
 import com.example.bookblog.CommentActivity;
 import com.example.bookblog.Graphql.ApolloInstance;
-import com.example.bookblog.Graphql.Callbacks.GetAllYourPost;
 import com.example.bookblog.Graphql.Callbacks.GetLikeResponse;
 import com.example.bookblog.Graphql.GraphqlPostQueries;
 import com.example.bookblog.R;
@@ -33,22 +36,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import apolloSchema.AllYourPostQuery;
-import apolloSchema.GetAllPostResultsQuery;
 import apolloSchema.GetPostBookMarkResultQuery;
 import apolloSchema.GetPostLikeResultQuery;
 
-public class YouAdapter extends RecyclerView.Adapter<YouAdapter.HomeViewHolder> implements GetLikeResponse {
+public class YourPostAdapter extends RecyclerView.Adapter<YourPostAdapter.HomeViewHolder> {
     List<AllYourPostQuery.GetYourPost> list;
-    private static final String TAG = "HomeAdapter";
+    private static final String TAG = "YourPostAdapter";
     private final Context activity;
     private final ApolloClient client;
-    private GraphqlPostQueries graphqlQueries;
-    public YouAdapter(List<AllYourPostQuery.GetYourPost> list , Context activity){
+    private final GraphqlPostQueries graphqlQueries;
+    public YourPostAdapter(List<AllYourPostQuery.GetYourPost> list , Context activity){
         this.list = list;
         this.activity = activity;
         client = ApolloInstance.getInstance();
-        graphqlQueries = new GraphqlPostQueries((AppCompatActivity)activity);
+        graphqlQueries = new GraphqlPostQueries();
     }
+
     @NonNull
     @Override
     public HomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -147,6 +150,18 @@ public class YouAdapter extends RecyclerView.Adapter<YouAdapter.HomeViewHolder> 
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.bookImage);
 
+        holder.expand.setOnClickListener(v ->{
+
+            TransitionManager.beginDelayedTransition(holder.linearLayout, new AutoTransition());
+
+            if(holder.description.getMaxLines() == 5){
+                holder.description.setMaxLines(Integer.MAX_VALUE);
+                holder.expand.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_up_24);
+            }else{
+                holder.description.setMaxLines(5);
+                holder.expand.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_down_24);
+            }
+        });
 
     }
 
@@ -155,14 +170,13 @@ public class YouAdapter extends RecyclerView.Adapter<YouAdapter.HomeViewHolder> 
         return list.size();
     }
 
-    @Override
-    public void setLikeResponse(boolean isLiked) {
-        Log.d(TAG, "setLikeResponse: "+isLiked);
-    }
 
     public class HomeViewHolder extends RecyclerView.ViewHolder{
         public TextView bookName , description;
         public ImageView bookImage , likes , bookMark;
+        public LinearLayout linearLayout;
+        public Button expand;
+
 
         public HomeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -170,7 +184,10 @@ public class YouAdapter extends RecyclerView.Adapter<YouAdapter.HomeViewHolder> 
             this.description = itemView.findViewById(R.id.description);
             this.bookImage = itemView.findViewById(R.id.imageUrl);
             this.likes = itemView.findViewById(R.id.like);
+            this.linearLayout = itemView.findViewById(R.id.content);
             this.bookMark = itemView.findViewById(R.id.bookMark);
+            this.expand = itemView.findViewById(R.id.expandableClick);
+
         }
     }
 }

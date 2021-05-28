@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".CommentActivity"
     >
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/commentRecyclerview"
         android:layout_alignParentTop="true"

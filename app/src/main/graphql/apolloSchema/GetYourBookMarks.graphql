@@ -1,0 +1,9 @@
+query GetYourBookMarks{
+    getYourBookMarks{
+        id
+        imageUrl
+        description
+        bookname
+        likeCount
+    }
+}
