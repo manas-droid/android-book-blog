@@ -20,6 +20,7 @@ public class PostComments {
     }
 
     public void postCommentForAPost(String comment , int postId){
+
         client.mutate(AddPostCommentResultMutation.builder().comment(comment)
                 .parentId(null).postId(postId).build())
                 .enqueue(new ApolloCall.Callback<AddPostCommentResultMutation.Data>() {

@@ -1,12 +1,16 @@
 package com.example.bookblog;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.bookblog.Graphql.ApolloInstance;
@@ -52,12 +56,29 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.home : selectedFragment = new HomeFragment();
                             break;
             case R.id.you : selectedFragment = new YouFragment();
+
             default: break;
         }
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, selectedFragment)
                 .commit();
         return true;
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.actionbaricon, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+       int id = item.getItemId();
+       if(id == R.id.addPost){
+           startActivity(new Intent(this , AddPostActivity.class));
+       }
+        return true;
+    }
 }

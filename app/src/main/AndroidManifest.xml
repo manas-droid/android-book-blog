@@ -11,9 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookBlog"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".AddPostActivity"></activity>
-        <activity android:name=".CommentActivity" />
+        android:usesCleartextTraffic="true"
+
+        >
+
+        <activity android:name=".SinglePostActivity"
+            android:label="Posts"
+            />
+        <activity android:name=".AddPostActivity" />
+        <activity
+            android:name=".CommentActivity"
+            android:label="Comment Section"
+            />
+
         <activity android:name=".HomeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

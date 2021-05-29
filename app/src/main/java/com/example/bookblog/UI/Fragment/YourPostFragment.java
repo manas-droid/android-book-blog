@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,9 +22,12 @@ import com.example.bookblog.UI.ViewModel.YourPostsFragmentViewModel;
 
 
 public class YourPostFragment extends Fragment {
+
     YourPostsFragmentViewModel fragmentViewModel;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     private static final String TAG = "YourPostFragment";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +41,17 @@ public class YourPostFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_yourposts, container , false);
         recyclerView = view.findViewById(R.id.recyclerView);
+        progressBar = view.findViewById(R.id.progressBar);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         fragmentViewModel.getMutableLiveData().observe(getActivity(), getYourPosts -> {
             if(getYourPosts!=null){
-                Log.d(TAG, "onChanged: here");
+                progressBar.setVisibility(View.GONE);
                 YourPostAdapter youAdapter = new YourPostAdapter(getYourPosts, getActivity());
                 recyclerView.setAdapter(youAdapter);
+            }else{
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
 

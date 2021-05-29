@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.bookblog.UI.Adapter.CommentAdapter;
@@ -22,15 +23,20 @@ import com.example.bookblog.UI.ViewModel.CommentActivityViewModel;
 import com.example.bookblog.UtilUser.User;
 import com.example.bookblog.UtilUser.UserProfile;
 
+import java.util.List;
+
+import apolloSchema.GetAllCommentResultQuery;
+
 
 public class CommentActivity extends AppCompatActivity {
     private static final String TAG = "CommentActivity";
     private ImageView imageView;
     private RecyclerView recyclerView;
-    private CommentActivityViewModel commentActivityViewModel;
+    public CommentActivityViewModel commentActivityViewModel;
     private Button submitPost ;
     private EditText addCommentToPost;
     private ProgressBar progressBar;
+    private List<GetAllCommentResultQuery.GetComment> getComments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +53,6 @@ public class CommentActivity extends AppCompatActivity {
                 .AndroidViewModelFactory.getInstance(getApplication()))
                 .get(CommentActivityViewModel.class);
 
-
         commentActivityViewModel.callGetComments(postId);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -55,7 +60,8 @@ public class CommentActivity extends AppCompatActivity {
         commentActivityViewModel.getGetCommentLiveData().observe(this, getCommentList -> {
             if(getCommentList!=null) {
                 progressBar.setVisibility(View.GONE);
-                CommentAdapter commentAdapter = new CommentAdapter(getCommentList);
+                 CommentAdapter commentAdapter = new CommentAdapter(getCommentList);
+                 getComments = getCommentList;
                 recyclerView.setAdapter(commentAdapter);
             }else{
                 progressBar.setVisibility(View.VISIBLE);
@@ -88,7 +94,7 @@ public class CommentActivity extends AppCompatActivity {
             Log.d(TAG, "onClick: "+addCommentToPost.getText().toString());
             commentActivityViewModel.callPostComments(postId,addCommentToPost.getText().toString(),this);
             addCommentToPost.setText("");
-            Log.d(TAG, "onCreate: submitted");
+            Toast.makeText(this, "Comment Posted ", Toast.LENGTH_SHORT).show();
         });
     }
 

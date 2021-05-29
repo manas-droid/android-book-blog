@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView android:id="@+id/card"
+        android:layout_width="wrap_content"
+        app:cardElevation="5dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_baseline_person_24"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/app_name"
+                />
+        </LinearLayout>
+
+
+
+</com.google.android.material.card.MaterialCardView>
+

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="30dp"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     tools:context=".AddPostActivity">
 
@@ -18,10 +22,10 @@
             android:layout_width="match_parent"
             android:id="@+id/bookName"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
-
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -36,9 +40,39 @@
             android:layout_width="match_parent"
             android:id="@+id/description"
             android:layout_height="wrap_content"
-            android:minLines="5"
+            android:maxLines="3"
+            android:scrollbars="vertical"
             />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
+    <Button
+        android:id="@+id/chooseFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/outlinedTextField2"
+        android:layout_marginTop="20dp"
+        android:text="choose file" />
+
+    <ImageView
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/chooseFile"
+        android:id="@+id/imageUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        />
+
+
+    <Button
+        android:id="@+id/submitPost"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/imageUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        />
+
 </RelativeLayout>
+</ScrollView>

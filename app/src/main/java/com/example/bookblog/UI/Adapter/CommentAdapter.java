@@ -1,6 +1,5 @@
 package com.example.bookblog.UI.Adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +35,13 @@ public class CommentAdapter  extends  RecyclerView.Adapter<CommentAdapter.Commen
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: "+position);
+
         holder.nickname.setText(this.getCommentList.get(position).nickname());
         holder.commentBody.setText(this.getCommentList.get(position).comment());
         Glide.with(holder.itemView)
                 .load(this.getCommentList.get(position).picture())
                 .into(holder.image);
+
     }
 
     @Override

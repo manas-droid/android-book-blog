@@ -25,7 +25,9 @@ import com.apollographql.apollo.exception.ApolloException;
 import com.bumptech.glide.Glide;
 import com.example.bookblog.CommentActivity;
 import com.example.bookblog.Graphql.ApolloInstance;
+import com.example.bookblog.Graphql.BookMarks.GetBookMark;
 import com.example.bookblog.Graphql.GraphqlPostQueries;
+import com.example.bookblog.Graphql.Likes.GetLikes;
 import com.example.bookblog.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,12 +43,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     List<GetAllPostResultsQuery.GetAllPost> list;
     private static final String TAG = "HomeAdapter";
     private final Context activity;
-    private final ApolloClient client;
     private GraphqlPostQueries graphqlQueries;
     public HomeAdapter(List<GetAllPostResultsQuery.GetAllPost> list , Context activity){
         this.list = list;
         this.activity = activity;
-        client = ApolloInstance.getInstance();
         graphqlQueries = new GraphqlPostQueries();
     }
     @NonNull
@@ -61,59 +61,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
 
         GetAllPostResultsQuery.GetAllPost post = list.get(position);
-        ApolloQueryCall<GetPostLikeResultQuery.Data> like =  this.client.query(GetPostLikeResultQuery.builder().postId(post.id()).build());
+        GetLikes getLikes = new GetLikes(post.id());
+        getLikes.getLikesOfAPost(holder.likes);
+        GetBookMark getBookMark = new GetBookMark(post.id());
+        getBookMark.getBookMarkForAPost(holder.bookMark);
 
-        like.enqueue(new ApolloCall.Callback<GetPostLikeResultQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetPostLikeResultQuery.Data> response) {
-                if(!response.hasErrors()){
-                    if (response.getData().getLikes()) {
-                        holder.likes.setTag("liked");
-                        holder.likes.setImageResource(R.drawable.ic_like);
-                    }
-                }
-                else {
-                    for(Error error : response.getErrors()){
-                        Log.d(TAG, "onResponse: "+error.getMessage());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "onFailure: ",e );
-            }
-        });
-
-
-        client.query(GetPostBookMarkResultQuery.builder().postId(post.id()).build())
-                .enqueue(new ApolloCall.Callback<GetPostBookMarkResultQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull Response<GetPostBookMarkResultQuery.Data> response) {
-                if(!response.hasErrors()){
-                    if(response.getData().getBookMarks()) {
-                        holder.bookMark.setImageResource(R.drawable.ic_bookmarked);
-                        holder.bookMark.setTag("bookmarked");
-                    }
-                }
-            }
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-                Log.e(TAG, "onFailure: ",e );
-            }
-        });
 
 
         holder.likes.setOnClickListener(v -> {
           if(holder.likes.getTag().equals("not liked")){
-              Log.d(TAG, "onBindViewHolder: to like");
               holder.likes.setImageResource(R.drawable.ic_like);
               holder.likes.setTag("liked");
           }else{
-              Log.d(TAG, "onBindViewHolder: to unlike");
               holder.likes.setImageResource(R.drawable.ic_notliked);
               holder.likes.setTag("not liked");
           }
-
           graphqlQueries.postLikesForAPost(post.id());
         });
 
@@ -121,11 +83,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         holder.bookMark.setOnClickListener(v -> {
             if(holder.bookMark.getTag().equals("not bookmarked")){
-                Log.d(TAG, "onBindViewHolder: to bookmark");
                 holder.bookMark.setImageResource(R.drawable.ic_bookmarked);
                 holder.bookMark.setTag("bookmarked");
             }else{
-                Log.d(TAG, "onBindViewHolder: to un bookmark");
                 holder.bookMark.setImageResource(R.drawable.ic_notbookmarked);
                 holder.bookMark.setTag("not bookmarked");
             }
@@ -133,20 +93,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         });
 
 
-        holder.author.setText("article written by : "+post.nickname());
+        String author = "article written by : "+post.nickname();
+
+        holder.author.setText(author);
         holder.description.setText(post.description());
         holder.bookname.setText(post.bookname());
 
-        holder.itemView.setOnClickListener(v -> {
+        holder.comment.setOnClickListener(v -> {
             Intent intent = new Intent(this.activity, CommentActivity.class);
             intent.putExtra("postId", post.id());
             this.activity.startActivity(intent);
         });
 
 
-
         holder.expand.setOnClickListener(v ->{
-
+            Log.d(TAG, "onBindViewHolder: here in expand");
             TransitionManager.beginDelayedTransition(holder.linearLayout, new AutoTransition());
 
             if(holder.description.getMaxLines() == 5){
@@ -158,12 +119,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             }
         });
 
-
         Glide.with(holder.itemView).load(post.imageUrl())
                 .placeholder(R.drawable.ic_placeholder)
                 .into(holder.bookImage);
-
-
     }
 
     @Override
@@ -171,12 +129,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         return list.size();
     }
 
-    public class HomeViewHolder extends RecyclerView.ViewHolder{
+    public static class  HomeViewHolder extends RecyclerView.ViewHolder{
        public TextView bookname , description , author;
-       public ImageView bookImage , likes , bookMark;
+       public ImageView bookImage , likes , bookMark , comment;
        public Button expand;
        public LinearLayout linearLayout;
-
 
         public HomeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -187,8 +144,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             this.likes = itemView.findViewById(R.id.like);
             this.bookMark = itemView.findViewById(R.id.bookMark);
             this.expand = itemView.findViewById(R.id.expandableClick);
+            this.comment = itemView.findViewById(R.id.comment);
             this.linearLayout = itemView.findViewById(R.id.content);
         }
+
     }
 
 }
