@@ -1,18 +1,35 @@
 package com.example.bookblog;
 
+import androidx.annotation.InspectableProperty;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.example.bookblog.Graphql.AddPost;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Date;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -20,7 +37,7 @@ public class AddPostActivity extends AppCompatActivity {
     private ImageView uploadImage;
     private Button chooseFile , submitPost;
     private TextInputEditText bookName , description;
-    private Uri imageUri;
+    private Uri imageUri = null;
     private static final String TAG = "AddPostActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +53,29 @@ public class AddPostActivity extends AppCompatActivity {
         chooseFile.setOnClickListener(v -> {
             onSelectFile();
         });
+        submitPost.setOnClickListener(v->{
+            onSubmit();
+        });
+    }
+
+    private void onSubmit(){
+        String mimeType = getContentResolver().getType(imageUri);
+
+        InputStream inputStream = null;
+        try {
+             inputStream = getContentResolver().openInputStream(imageUri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+      Date date = new Date();
+        String intermediate = bookName.getText().toString()+date.toString().substring(0,10);
+      String imageTitle = "images/"+intermediate.replace(' ','-')+String.valueOf(Math.random()*100000).substring(0,5);
+      Log.d(TAG, "onSubmit: "+imageTitle);
+
+      AddPost post = new AddPost(this , bookName.getText().toString() , description.getText().toString());
+      post.createPost(inputStream ,imageTitle, mimeType);
     }
 
 
@@ -52,10 +92,11 @@ public class AddPostActivity extends AppCompatActivity {
 
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data!=null && data.getData() != null){
              imageUri = data.getData();
-
-            Log.d(TAG, "onActivityResult: "+imageUri+" type "+imageUri.getHost()+imageUri.getPath());
-            uploadImage.setVisibility(View.VISIBLE);
+             uploadImage.setVisibility(View.VISIBLE);
              uploadImage.setImageURI(imageUri);
         }
     }
+
+
+
 }

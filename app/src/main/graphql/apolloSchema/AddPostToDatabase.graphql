@@ -1,0 +1,13 @@
+mutation createPost(
+    $bookname : String!
+    $description: String!
+    $imageUrl : String
+){
+    createPost (input:{bookname : $bookname description:$description imageUrl : $imageUrl}){
+        ok
+        errors{
+            path
+            message
+        }
+    }
+}

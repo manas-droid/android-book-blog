@@ -1,0 +1,7 @@
+mutation s3Signature($filename : String! $filetype:String!)
+{
+    s3Signature(filename:$filename  filetype:$filetype){
+        signedRequest
+        url
+    }
+}
